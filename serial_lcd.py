@@ -21,6 +21,67 @@ _SH.setLevel(logging.DEBUG)
 _SH.setFormatter(FORMATTER)
 LOG.addHandler(_SH)
 
+
+class LcdDisplay(object):
+    """ LcdDisplay Class representing the LCD display 
+    """
+    def __init__(self, textLine0, textLine1, cursorX, cursorY):
+        """ __init__ method for a LcdDisplay 
+
+        Args:
+            textLine0 (string): text on line 0 of the display DDram address 0x00 - 0x0F
+            textLine1 (string): text on line 1 of the display DDram address 0xC0 - 0xCF
+            cursorX (int): x coordinate of the cursor
+            cursorY (int): y coordinate of the cursor
+        """
+        self.textLine0 = textLine0
+        self.textLine1 = textLine1
+        self.cursorX = cursorX
+        self.cursorY = cursorY
+
+    def initializeLcd(self):
+    	LOG.info("Initializing LCD display")
+    	ser.write(lcdConstants.clearDisplay)
+    	ser.write(lcdConstants.turnOnDisplayCursorBlinking)
+    	ser.write(lcdConstants.cursorHomeLine0)
+
+    def setDisplayText(self, text):
+    	LOG.debug("Setting display text %s", text)
+    	ser.write(text)
+
+    def setCursorPosition(self, line, position): #line <=1 position <= 15
+    	ddramAdress = 0
+    	if(position <= 15):
+    		self.cursorX = position
+    	else:
+    		self.cursorX = 0
+    	if(line == 1):
+    		self.cursorY = 1
+    		ddramAdress = 192
+    	else:
+    		self.cursorY = 0
+    		ddramAdress = 128
+
+    	LOG.debug("Setting cursor at line: %d at postion: %d", self.cursorY, self.cursorX)	
+    	displayAddress = ddramAdress + self.cursorX
+    	instruction = bytearray.fromhex(u'FE')
+    	instruction.append(displayAddress)
+    	ser.write(instruction)
+
+    def __str__(self):
+        """ Informal string representation of the LcdDisplay object.
+        Returns:
+            Formatted string containing the text diplayed and cursor position
+        """
+        return 'LcdDisplay \n{}\n{}\ncursor position: ({},{})'.format(self.textLine0, self.textLine1, self.cursorX, self.cursorY)
+
+    def __repr__(self):
+        """ official string representation of the LcdDisplay object.
+        Returns:
+            Formatted string containing the text diplayed and cursor position
+        """
+        return self.__str__()
+
 if __name__ == '__main__':
 	# 1) configure an argument parser
 	parser = argparse.ArgumentParser(description='Serial LCD driver')
@@ -55,16 +116,14 @@ if __name__ == '__main__':
 		ser.open()
 		LOG.info("/dev/serial0 was already open, was closed and opened again!")
 
-	time.sleep(1)		#display init delay
+	time.sleep(0.5)		#display init delay
 
-	LOG.info("Initializing LCD display")
-	ser.write(lcdConstants.clearDisplay)
-	ser.write(lcdConstants.turnOnDisplayCursorBlinking)
-	ser.write(lcdConstants.cursorHomeLine0)
+	display = LcdDisplay('', '', 0, 0)
+	display.initializeLcd()
+	display.setCursorPosition(1, 5)
+	display.setDisplayText('Python')
+	display.setCursorPosition(0, 3)
+	display.setDisplayText('WiZard')
 
-	LOG.info("Print some Text on the display")
-	ser.write('Embedded Linux')
-	ser.write(lcdConstants.cursorHomeLine1)
-	ser.write('Wizard')
 	while True:
 		pass
