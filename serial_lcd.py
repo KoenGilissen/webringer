@@ -125,5 +125,33 @@ if __name__ == '__main__':
 	display.setCursorPosition(0, 3)
 	display.setDisplayText('WiZard')
 
+	display.setCursorPosition(0, 0)
+	for i in range(0, 16):
+		#char = bytearray.fromhex(u'72')
+		char = bytearray([i+161])
+		ser.write(char)
+
+	display.setCursorPosition(1, 0)
+	for i in range(16, 32):
+		#char = bytearray.fromhex(u'73')
+		char = bytearray([i+161])
+		ser.write(char)
+
+	#set cgrom address
+	customChar0 = bytearray.fromhex("00 0E 15 17 11 0E 00 00")
+	cgromInstr0 = bytearray.fromhex(u'FE 40')
+	
+
+	ser.write(cgromInstr0)
+	for element in customChar0:
+		LOG.debug("element %d", element)
+		ser.write(bytearray([element]))
+
+	ser.write(lcdConstants.clearDisplay)
+	ser.write(lcdConstants.cursorHomeLine0)
+	cgomAddress = bytearray([0])
+	ser.write(cgomAddress) 
+
+
 	while True:
 		pass

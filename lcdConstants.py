@@ -14,5 +14,5 @@ turnOnDisplayCursorBlinking = bytearray.fromhex(u'FE 0F')	 #  Turn Display On / 
 underlineCursor = bytearray.fromhex(u'FE 0E')	 #  Underline Cursor On
 blinkCursor = bytearray.fromhex(u'FE 0D')	 #  Blinking Cursor On
 cursorHomeLine0 = bytearray.fromhex(u'FE 80')	 # DD ram address 0x00 (128)
-cursorHomeLine1 = bytearray.fromhex(u'FE C0')	 # DD ran address 0x40 (192)
+cursorHomeLine1 = bytearray.fromhex(u'FE C0')	 # DD ram address 0xC0 (192)
 turnOffDisplayShift = bytearray.fromhex(u'FE 10')
