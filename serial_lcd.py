@@ -42,7 +42,7 @@ class LcdDisplay(object):
 	def initializeLcd(self):
 		LOG.info("Initializing LCD display")
 		ser.write(lcdConstants.clearDisplay)
-		ser.write(lcdConstants.turnOnDisplayCursorBlinking)
+		ser.write(lcdConstants.turnOnDisplay)
 		ser.write(lcdConstants.cursorHomeLine0)
 
 	def setDisplayText(self, text):
@@ -69,15 +69,19 @@ class LcdDisplay(object):
 		ser.write(instruction)
 
 	def createCustomChar(self, address, pattern):
-		#set cgrom address
-		LOG.debug("Creating custom character in CGROM")
-		customCharPattern = bytearray.fromhex(pattern)
-		cgromInstr = bytearray.fromhex(u'FE')
-		cgromInstr.append(64+(address)) #0x40 + 1...8
-		ser.write(cgromInstr) #Send cgrom command to LCD
-		LOG.debug("Writing Pattern to %d", cgromInstr[1])
-		for element in customCharPattern:
+		LOG.info("Creating Custom Char at: %d", address)
+		cgramChar0Base =  address 
+		counter = 0
+		for element in pattern:
+			ser.write(bytearray.fromhex(u'FE'))
+			cgramAddress = cgramChar0Base + counter
+			LOG.debug("address: %d element: %d", cgramAddress, element)
+			ser.write(bytearray([cgramAddress]))
+			time.sleep(0.0005)
 			ser.write(bytearray([element]))
+			counter += 1
+		return 0
+
 
 	def __str__(self):
 		""" Informal string representation of the LcdDisplay object.
@@ -135,99 +139,28 @@ if __name__ == '__main__':
 	display.setCursorPosition(0, 4)
 	display.setDisplayText('WiZard')
 
-	#set cgrom address
-	pacman_0 = bytearray.fromhex("00 00 00 01 07 0F 0F 1F")
-	cgramChar0Base =  64 #  0x40
-	counter = 0
-	for element in pacman_0:
-		ser.write(bytearray.fromhex(u'FE'))
-		cgramAddress = cgramChar0Base + counter
-		ser.write(bytearray([cgramAddress]))
-		time.sleep(0.0005)
-		ser.write(bytearray([element]))
-		counter += 1
+	display.createCustomChar(lcdConstants.cgramChar0Base, lcdConstants.pacman0)
+	display.createCustomChar(lcdConstants.cgramChar1Base, lcdConstants.pacman1)
+	display.createCustomChar(lcdConstants.cgramChar2Base, lcdConstants.pacman2)
+	display.createCustomChar(lcdConstants.cgramChar3Base, lcdConstants.pacman3)
+	display.createCustomChar(lcdConstants.cgramChar4Base, lcdConstants.pacman4)
+	display.createCustomChar(lcdConstants.cgramChar5Base, lcdConstants.pacman5)
+
 
 	display.setCursorPosition(0, 0)
 	ser.write(bytearray.fromhex(u'00')) #CGROM address 0 = custom char 0
-
-	#set cgrom address
-	pacman_1 = bytearray.fromhex("00 00 00 10 1c 0e 1e 1f")
-	cgramChar1Base =  72 #  0x48
-	counter = 0
-	for element in pacman_1:
-		ser.write(bytearray.fromhex(u'FE'))
-		cgramAddress = cgramChar1Base + counter
-		ser.write(bytearray([cgramAddress]))
-		time.sleep(0.0005)
-		ser.write(bytearray([element]))
-		counter += 1
-
 	display.setCursorPosition(0, 1)
 	ser.write(bytearray.fromhex(u'01')) #CGROM address 1 = custom char 1
-
-	#set cgrom address
-	pacman_2 = bytearray.fromhex("1f 0f 0f 07 01 00 00 00")
-	cgramChar2Base =  80 #  0x50
-	counter = 0
-	for element in pacman_2:
-		ser.write(bytearray.fromhex(u'FE'))
-		cgramAddress = cgramChar2Base + counter
-		ser.write(bytearray([cgramAddress]))
-		time.sleep(0.0005)
-		ser.write(bytearray([element]))
-		counter += 1
-
 	display.setCursorPosition(1, 0)
 	ser.write(bytearray.fromhex(u'02')) #CGROM address 2 = custom char 2
-
-	#set cgrom address
-	pacman_3 = bytearray.fromhex("1f 1e 1e 1c 10 00 00 00")
-	cgramChar3Base =  88 #  0x58
-	counter = 0
-	for element in pacman_3:
-		ser.write(bytearray.fromhex(u'FE'))
-		cgramAddress = cgramChar3Base + counter
-		ser.write(bytearray([cgramAddress]))
-		time.sleep(0.0005)
-		ser.write(bytearray([element]))
-		counter += 1
-
 	display.setCursorPosition(1, 1)
 	ser.write(bytearray.fromhex(u'03')) #CGROM address 3 = custom char 3
-
 	display.setCursorPosition(0, 14)
 	ser.write(bytearray.fromhex(u'00')) #PACMAN Back TOP
-
 	display.setCursorPosition(1, 14)
 	ser.write(bytearray.fromhex(u'02')) #PACMAN Back BOTTOM
-
-	#set cgrom address
-	pacman_4 = bytearray.fromhex("00 00 00 10 1c 0e 1c 10")
-	cgramChar4Base =  96 #  0x60
-	counter = 0
-	for element in pacman_4:
-		ser.write(bytearray.fromhex(u'FE'))
-		cgramAddress = cgramChar4Base + counter
-		ser.write(bytearray([cgramAddress]))
-		time.sleep(0.0005)
-		ser.write(bytearray([element]))
-		counter += 1
-
 	display.setCursorPosition(0, 15)
 	ser.write(bytearray.fromhex(u'04')) #CGROM address 4 = custom char 4
-
-	#set cgrom address
-	pacman_5 = bytearray.fromhex("10 1c 1e 1c 10 00 00 00")
-	cgramChar5Base =  104 #  0x68
-	counter = 0
-	for element in pacman_5:
-		ser.write(bytearray.fromhex(u'FE'))
-		cgramAddress = cgramChar5Base + counter
-		ser.write(bytearray([cgramAddress]))
-		time.sleep(0.0005)
-		ser.write(bytearray([element]))
-		counter += 1
-
 	display.setCursorPosition(1, 15)
 	ser.write(bytearray.fromhex(u'05')) #CGROM address 5 = custom char 5
 
