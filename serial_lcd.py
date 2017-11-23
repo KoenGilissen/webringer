@@ -45,6 +45,15 @@ class LcdDisplay(object):
 		ser.write(lcdConstants.turnOnDisplay)
 		ser.write(lcdConstants.cursorHomeLine0)
 
+		LcdDisplay.createCustomChar(self, lcdConstants.cgramChar0Base, lcdConstants.pacman0)
+		LcdDisplay.createCustomChar(self, lcdConstants.cgramChar1Base, lcdConstants.pacman1)
+		LcdDisplay.createCustomChar(self, lcdConstants.cgramChar2Base, lcdConstants.pacman2)
+		LcdDisplay.createCustomChar(self, lcdConstants.cgramChar3Base, lcdConstants.pacman3)
+		LcdDisplay.createCustomChar(self, lcdConstants.cgramChar4Base, lcdConstants.pacman4)
+		LcdDisplay.createCustomChar(self, lcdConstants.cgramChar5Base, lcdConstants.pacman5)
+		LcdDisplay.createCustomChar(self, lcdConstants.cgramChar6Base, lcdConstants.candyTop)
+		LcdDisplay.createCustomChar(self, lcdConstants.cgramChar7Base, lcdConstants.candyBottom)
+
 	def setDisplayText(self, text):
 		LOG.debug("Setting display text %s", text)
 		ser.write(text)
@@ -68,6 +77,7 @@ class LcdDisplay(object):
 		instruction.append(displayAddress)
 		ser.write(instruction)
 
+	@staticmethod
 	def createCustomChar(self, address, pattern):
 		LOG.info("Creating Custom Char at: %d", address)
 		cgramChar0Base =  address 
@@ -137,15 +147,7 @@ if __name__ == '__main__':
 	display = LcdDisplay('', '', 0, 0)
 	display.initializeLcd()
 	display.setCursorPosition(0, 4)
-	display.setDisplayText('WiZard')
-
-	display.createCustomChar(lcdConstants.cgramChar0Base, lcdConstants.pacman0)
-	display.createCustomChar(lcdConstants.cgramChar1Base, lcdConstants.pacman1)
-	display.createCustomChar(lcdConstants.cgramChar2Base, lcdConstants.pacman2)
-	display.createCustomChar(lcdConstants.cgramChar3Base, lcdConstants.pacman3)
-	display.createCustomChar(lcdConstants.cgramChar4Base, lcdConstants.pacman4)
-	display.createCustomChar(lcdConstants.cgramChar5Base, lcdConstants.pacman5)
-
+	#display.setDisplayText('WiZard')
 
 	display.setCursorPosition(0, 0)
 	ser.write(bytearray.fromhex(u'00')) #CGROM address 0 = custom char 0
@@ -163,7 +165,10 @@ if __name__ == '__main__':
 	ser.write(bytearray.fromhex(u'04')) #CGROM address 4 = custom char 4
 	display.setCursorPosition(1, 15)
 	ser.write(bytearray.fromhex(u'05')) #CGROM address 5 = custom char 5
-
+	display.setCursorPosition(0, 3)
+	ser.write(bytearray.fromhex(u'06'))
+	display.setCursorPosition(1, 3)
+	ser.write(bytearray.fromhex(u'07'))
 
 	while True:
 		pass
