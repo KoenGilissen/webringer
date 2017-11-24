@@ -58,9 +58,9 @@ class LcdDisplay(object):
 		LOG.debug("Setting display text %s", text)
 		ser.write(text)
 
-	def setCursorPosition(self, line, position): #line <=1 position <= 15
+	def setCursorPosition(self, line, position): #line <=1 position <= lcdConstants.numberOfChars-1
 		ddramAdress = 0
-		if(position <= 15):
+		if(position <= lcdConstants.numberOfChars-1):
 			self.cursorX = position
 		else:
 			self.cursorX = 0
@@ -92,6 +92,34 @@ class LcdDisplay(object):
 			counter += 1
 		return 0
 
+	def drawPacmanClosed(self, column):
+		if(column < lcdConstants.numberOfChars-1):
+			display.setCursorPosition(0, column) #PM back top
+			ser.write(bytearray.fromhex(u'00')) 
+			display.setCursorPosition(0, column+1)
+			ser.write(bytearray.fromhex(u'01')) #PM closed front top
+			display.setCursorPosition(1, column)
+			ser.write(bytearray.fromhex(u'02')) #PM back bottom
+			display.setCursorPosition(1, column+1)
+			ser.write(bytearray.fromhex(u'03')) #PM closed front bottom
+
+	def drawPacmanOpen(self, column):
+		if(column < lcdConstants.numberOfChars-1):
+			display.setCursorPosition(0, column) #PM back top
+			ser.write(bytearray.fromhex(u'00')) 
+			display.setCursorPosition(0, column+1)
+			ser.write(bytearray.fromhex(u'04')) #PM open front top
+			display.setCursorPosition(1, column)
+			ser.write(bytearray.fromhex(u'02')) #PM  back bottom
+			display.setCursorPosition(1, column+1)
+			ser.write(bytearray.fromhex(u'05')) #PM open front bottom
+
+	def drawCandy(self, column):
+		if(column < lcdConstants.numberOfChars-1):
+			display.setCursorPosition(0, column) #candy top
+			ser.write(bytearray.fromhex(u'06')) 
+			display.setCursorPosition(1, column)
+			ser.write(bytearray.fromhex(u'07')) #candy bottom
 
 	def __str__(self):
 		""" Informal string representation of the LcdDisplay object.
@@ -149,26 +177,29 @@ if __name__ == '__main__':
 	display.setCursorPosition(0, 4)
 	#display.setDisplayText('WiZard')
 
-	display.setCursorPosition(0, 0)
-	ser.write(bytearray.fromhex(u'00')) #CGROM address 0 = custom char 0
-	display.setCursorPosition(0, 1)
-	ser.write(bytearray.fromhex(u'01')) #CGROM address 1 = custom char 1
-	display.setCursorPosition(1, 0)
-	ser.write(bytearray.fromhex(u'02')) #CGROM address 2 = custom char 2
-	display.setCursorPosition(1, 1)
-	ser.write(bytearray.fromhex(u'03')) #CGROM address 3 = custom char 3
-	display.setCursorPosition(0, 14)
-	ser.write(bytearray.fromhex(u'00')) #PACMAN Back TOP
-	display.setCursorPosition(1, 14)
-	ser.write(bytearray.fromhex(u'02')) #PACMAN Back BOTTOM
-	display.setCursorPosition(0, 15)
-	ser.write(bytearray.fromhex(u'04')) #CGROM address 4 = custom char 4
-	display.setCursorPosition(1, 15)
-	ser.write(bytearray.fromhex(u'05')) #CGROM address 5 = custom char 5
-	display.setCursorPosition(0, 3)
-	ser.write(bytearray.fromhex(u'06'))
-	display.setCursorPosition(1, 3)
-	ser.write(bytearray.fromhex(u'07'))
+	# Animation test
+	ser.write(lcdConstants.clearDisplay)
+	loopCounter = 0
+	while loopCounter < lcdConstants.numberOfChars-1:
+		display.drawCandy(loopCounter)
+		loopCounter = loopCounter + 2
+
+	loopCounter = 0
+	while loopCounter < lcdConstants.numberOfChars-1:
+		display.drawPacmanClosed(loopCounter)
+		time.sleep(1)
+		display.drawPacmanOpen(loopCounter)
+		time.sleep(1)
+		loopCounter = loopCounter + 1
+	ser.write(lcdConstants.clearDisplay)
+
+	# display.drawPacmanClosed(14)
+	# display.drawPacmanOpen(0)
+	# display.drawCandy(2)
+	# display.drawCandy(4)
+	# display.drawCandy(6)
+	# display.drawCandy(8)
+
 
 	while True:
 		pass

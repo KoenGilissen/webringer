@@ -1,5 +1,7 @@
 #lcdConstants
 
+numberOfChars = 16
+
 # controlCharacter 'FE'
 #8 bit values in byte array are seperated by a single space
 clearDisplay = bytearray.fromhex(u'FE 01') #  Clear Display
@@ -16,6 +18,7 @@ blinkCursor = bytearray.fromhex(u'FE 0D')	 #  Blinking Cursor On
 cursorHomeLine0 = bytearray.fromhex(u'FE 80')	 # DD ram address 0x00 (128)
 cursorHomeLine1 = bytearray.fromhex(u'FE C0')	 # DD ram address 0xC0 (192)
 turnOffDisplayShift = bytearray.fromhex(u'FE 10')
+shiftOneRight = bytearray.fromhex(u'FE 1E')
 
 #Custom Chars
 pacman0 = bytearray.fromhex(u'00 00 00 01 07 0F 0F 1F')
