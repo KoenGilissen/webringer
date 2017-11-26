@@ -27,8 +27,8 @@ pacman2 = bytearray.fromhex(u'1f 0f 0f 07 01 00 00 00')
 pacman3 = bytearray.fromhex(u'1f 1e 1e 1c 10 00 00 00')
 pacman4 = bytearray.fromhex(u'00 00 00 10 1c 0e 1c 10')
 pacman5 = bytearray.fromhex(u'10 1c 1e 1c 10 00 00 00')
-candyTop = bytearray.fromhex(u'00 00 00 00 00 00 0E FF')
-candyBottom = bytearray.fromhex(u'FF 0E 00 00 00 00 00 00')
+candyTop = bytearray.fromhex(u'00 00 00 00 00 00 04 0E')
+candyBottom = bytearray.fromhex(u'0E 04 00 00 00 00 00 00')
 
 
 #CGROM addresses

@@ -115,7 +115,7 @@ class LcdDisplay(object):
 			ser.write(bytearray.fromhex(u'05')) #PM open front bottom
 
 	def drawCandy(self, column):
-		if(column < lcdConstants.numberOfChars-1):
+		if(column < lcdConstants.numberOfChars):
 			display.setCursorPosition(0, column) #candy top
 			ser.write(bytearray.fromhex(u'06')) 
 			display.setCursorPosition(1, column)
@@ -180,15 +180,19 @@ if __name__ == '__main__':
 	# Animation test
 	ser.write(lcdConstants.clearDisplay)
 	loopCounter = 0
-	while loopCounter < lcdConstants.numberOfChars-1:
+	while loopCounter < lcdConstants.numberOfChars:
 		display.drawCandy(loopCounter)
-		loopCounter = loopCounter + 2
+		loopCounter = loopCounter + 1
 
 	loopCounter = 0
-	while loopCounter < lcdConstants.numberOfChars-1:
-		display.drawPacmanClosed(loopCounter)
-		time.sleep(1)
+	while loopCounter < lcdConstants.numberOfChars-2:
 		display.drawPacmanOpen(loopCounter)
+		time.sleep(1)
+		display.drawPacmanClosed(loopCounter+1)
+		display.setCursorPosition(0, loopCounter)
+		display.setDisplayText(' ')
+		display.setCursorPosition(1, loopCounter)
+		display.setDisplayText(' ')
 		time.sleep(1)
 		loopCounter = loopCounter + 1
 	ser.write(lcdConstants.clearDisplay)
